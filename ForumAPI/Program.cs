@@ -6,11 +6,18 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ForumAPI.Areas.Identity.Data;
+using ForumAPI.Areas.Identity.Services;
+using ForumAPI.Areas.WebForum.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 string corsPolicyName = "CorsPolicy";
 var Configuration = builder.Configuration;
 
+#region AddedScopes
+builder.Services.AddScoped<JWTHandler>();
+builder.Services.AddScoped<IdentityHandler>();
+#endregion
 
 #region connection strings
 var identityConnectionString = builder.Configuration.GetConnectionString("IdentityContextConnection");
@@ -42,7 +49,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+!";
     options.User.RequireUniqueEmail = true;
 })
-.AddEntityFrameworkStores<WebForumContext>()
+.AddEntityFrameworkStores<IdentityContext>()
 .AddDefaultTokenProviders();
 
 // COOKIE OPTIONS
@@ -71,6 +78,28 @@ builder.Services.AddAuthorization(options =>
         policy.RequireAuthenticatedUser();
     });
 });
+
+// FOR ADDING ROLES
+static async Task CheckRolesAndAddIfMissing(IServiceProvider _serviceProvider)
+{
+    using (var _roleManager = _serviceProvider.GetRequiredService<RoleManager<IdentityRole>>())
+    {
+        
+        Roles roles = new Roles();
+        foreach (var role in roles.roles)
+        {
+            var userRoleCheck = await _roleManager.RoleExistsAsync(role);
+
+            if (userRoleCheck)
+            {
+                return;
+            }
+
+            await _roleManager.CreateAsync(new IdentityRole(role));
+            Console.WriteLine(role);
+        }
+    }
+}
 #endregion
 
 #region JWT
@@ -147,5 +176,12 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
 });
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    await CheckRolesAndAddIfMissing(services);
+}
 
 app.Run();

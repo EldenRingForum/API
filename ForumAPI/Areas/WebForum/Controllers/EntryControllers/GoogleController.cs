@@ -6,8 +6,10 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Google : ControllerBase
+    public class GoogleController : ControllerBase
     {
+
+
         // GET: api/<Google>
         [HttpGet]
         public IEnumerable<string> Get()

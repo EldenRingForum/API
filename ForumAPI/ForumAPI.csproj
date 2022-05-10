@@ -29,7 +29,6 @@
 	  <Folder Include="Areas\Identity\Migrations\" />
 	  <Folder Include="Areas\WebForum\Data\Models\DTO\" />
 	  <Folder Include="Areas\WebForum\Migrations\" />
-	  <Folder Include="Areas\WebForum\Services\" />
 
 	</ItemGroup>
 
