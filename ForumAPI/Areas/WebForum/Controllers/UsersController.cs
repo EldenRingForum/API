@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ForumAPI.Areas.WebForum.Data.Context;
 using ForumAPI.Areas.WebForum.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ForumAPI.Areas.WebForum.Controllers
 {
@@ -22,6 +23,7 @@ namespace ForumAPI.Areas.WebForum.Controllers
         }
 
         // GET: api/Users
+        [Authorize(Policy = "ADMIN")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {

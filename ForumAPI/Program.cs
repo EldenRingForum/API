@@ -115,7 +115,7 @@ builder.Services.AddAuthentication(options =>
     {
         OnMessageReceived = context =>
         {
-            context.Token = context.Request.Cookies["WebForumApi"];
+            context.Token = context.Request.Cookies["ForumApi"];
             return Task.CompletedTask;
         }
     };

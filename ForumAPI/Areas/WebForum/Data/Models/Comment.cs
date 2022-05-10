@@ -6,6 +6,7 @@ namespace ForumAPI.Areas.WebForum.Data.Models
     {
         public int Id { get; set; }
         public int PostId { get; set; }
+        public int? UserId { get; set; }
         public string Text { get; set; }
         public DateTime TimeOfCreation { get; set; }
         public bool FlaggedInapropriate { get; set; }
