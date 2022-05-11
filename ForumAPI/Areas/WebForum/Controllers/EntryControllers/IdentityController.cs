@@ -34,8 +34,8 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
         [HttpPost("login")]
         public async Task<ActionResult<IdentityDTO>> Login([FromBody] IdentityDTO login)
         {
-            User? user = await _context.Users
-                .Where(s => s.UserName == login.email).FirstOrDefaultAsync();
+            User user = await _context.Users
+                .Where(s => s.Email == login.Email).FirstOrDefaultAsync();
 
             string token = await _identityHandler.Login(login);
             if (token == null) return StatusCode(404);
@@ -54,7 +54,7 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
         public async Task<ActionResult<IdentityDTO>> RegisterUser(IdentityDTO register)
         {
             User user = await _context.Users
-                .Where(s => s.UserName == register.email).FirstOrDefaultAsync();
+                .Where(s => s.UserName == register.UserName).FirstOrDefaultAsync();
             //register.roles = new List<string> { };
             string token = await _identityHandler.Register(register);
             if (token == "bad" || token is null)

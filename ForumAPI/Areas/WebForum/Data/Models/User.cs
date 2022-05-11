@@ -1,4 +1,4 @@
-﻿using ForumAPI.Areas.WebForum.Data.Context;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ForumAPI.Areas.WebForum.Data.Models
 {

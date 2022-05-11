@@ -47,7 +47,7 @@ namespace ForumAPI.Areas.Identity.Services
                     return false;
                 }
 
-                IdentityUser identityUser = await _userManager.FindByEmailAsync(user);
+                IdentityUser identityUser = await _userManager.FindByNameAsync(user);
                 await _userManager.AddToRoleAsync(identityUser, role);
             }
             return true;
@@ -93,15 +93,15 @@ namespace ForumAPI.Areas.Identity.Services
         #region Entry
         public async Task<string> Login(IdentityDTO login)
         {
-            var result = await _signInManager.PasswordSignInAsync(login.email, login.password, login.rememberMe, lockoutOnFailure: false);
-            var user = await _userManager.FindByEmailAsync(login.email);
+            var user = await _userManager.FindByEmailAsync(login.Email);
+            var result = await _signInManager.PasswordSignInAsync(user, login.Password, login.RememberMe, lockoutOnFailure: false);
 
             if (result.Succeeded)
             {
-                login.password = "";
-                login.email = "";
+                login.Password = "";
+                login.Email = "";
 
-                Console.WriteLine("User logged in with email: ", login.email);
+                Console.WriteLine("User logged in with email: ", login.Email);
 
                 var token = await _JWTHandler.GenerateToken(user);
                 //Create token with JWT HANDLER
@@ -114,23 +114,23 @@ namespace ForumAPI.Areas.Identity.Services
 
         public async Task<string> Register(IdentityDTO login)
         {
-            if (await _userManager.FindByEmailAsync(login.email) is not null) return "bad";
-            if (login.password != login.confirmPassword) return "bad";
+            if (await _userManager.FindByEmailAsync(login.Email) is not null) return "bad";
+            if (login.Password != login.ConfirmPassword) return "bad";
 
-            var user = new IdentityUser { UserName = login.email, Email = login.email, EmailConfirmed = true };
-            var result = await _userManager.CreateAsync(user, login.password);
+            var user = new IdentityUser { UserName = login.UserName, Email = login.Email, EmailConfirmed = true };
+            var result = await _userManager.CreateAsync(user, login.Password);
 
             if (result.Succeeded)
             {
-                User profile = new User { UserName = login.email };
+                User profile = new User { UserName = login.UserName, Email = login.Email };
 
                 await AddMultipleRolesToUser(profile.UserName, login.roles);
                 _context.Users.Add(profile);
                 _context.SaveChanges();
-                login.password = "";
-                login.email = "";
+                login.Password = "";
+                login.Email = "";
 
-                Console.WriteLine("User created with email: ", login.email);
+                Console.WriteLine("User created with email: ", login.Email);
 
                 var token = await _JWTHandler.GenerateToken(user);
 

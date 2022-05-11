@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ForumAPI.Areas.WebForum.Data.Context;
 using ForumAPI.Areas.WebForum.Data.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace ForumAPI.Areas.WebForum.Controllers
 {
@@ -16,17 +17,22 @@ namespace ForumAPI.Areas.WebForum.Controllers
     public class UsersController : ControllerBase
     {
         private readonly WebForumContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public UsersController(WebForumContext context)
+        public UsersController(WebForumContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
+
         }
 
         // GET: api/Users
-        [Authorize(Policy = "ADMIN")]
+        //[Authorize(Policy = "ADMIN")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
+            var temp = this.User.Identity.Name;
+            Console.WriteLine(_userManager.GetUserAsync(this.User));
             return await _context.Users.ToListAsync();
         }
 
