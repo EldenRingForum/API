@@ -1,4 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ForumAPI.Areas.Identity.Data;
+using ForumAPI.Areas.Identity.Services;
+using ForumAPI.Areas.WebForum.Data.Models.DTO;
+using ForumAPI.Areas.WebForum.Data.Models;
+using ForumAPI.Areas.WebForum.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using ForumAPI.Areas.WebForum.Data.Context;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,38 +16,98 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
     [ApiController]
     public class GoogleController : ControllerBase
     {
+        /*          GOOGLE LOGIN
+        ***************************************
+                    Opsummering
 
+        ***************************************
+        */
 
-        // GET: api/<Google>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IConfiguration _configuration;
+        private readonly IConfigurationSection _cookieName;
+        private readonly JWTHandler _jwtHandler;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly WebForumContext _context;
+        private readonly IdentityHandler _identityHandler;
+
+        public GoogleController(
+            IConfiguration configuration,
+            JWTHandler JWTHandler,
+            UserManager<IdentityUser> userManager,
+            WebForumContext context,
+            IdentityHandler identityHandler
+            )
         {
-            return new string[] { "value1", "value2" };
+            _configuration = configuration;
+            _jwtHandler = JWTHandler;
+            _userManager = userManager;
+            _context = context;
+            _identityHandler = identityHandler;
+            _cookieName = _configuration.GetSection("CookieNames");
         }
 
-        // GET api/<Google>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        //TODO: skal lige laves sådan at usernames kommer med ind over
+        //this function logs the user in on our server end with google login and returns a cookie in httponly format for CRSF security
+        #region Google login
+        [HttpPost("login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] ExternalAuthDTO externalAuthDTO)
         {
-            return "value";
-        }
+            var payload = await _jwtHandler.VerifyGoogleToken(externalAuthDTO);
+            if (payload == null)
+                return BadRequest("invalid External Auth");
 
-        // POST api/<Google>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+            var info = new UserLoginInfo(externalAuthDTO.Provider, payload.Subject, externalAuthDTO.Provider);
 
-        // PUT api/<Google>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+            //logs the user to the identity
+            var identityUser = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+            if (identityUser == null)
+            {
 
-        // DELETE api/<Google>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+                identityUser = await _userManager.FindByEmailAsync(payload.Email);
+                if (identityUser == null)
+                {
+
+                    User profile = new User { UserName = payload.Email };
+                    Roles roles = new Roles();
+
+                    await _identityHandler.AddRoleToUser(payload.Email, roles.roles[0]);
+                    _context.Users.Add(profile);
+                    _context.SaveChanges();
+
+                    identityUser = new IdentityUser { Email = payload.Email, UserName = payload.Email };
+
+                    await _userManager.CreateAsync(identityUser);
+
+                    await _userManager.AddLoginAsync(identityUser, info);
+
+                }
+                else
+                {
+                    await _userManager.AddLoginAsync(identityUser, info);
+                }
+            }
+
+            if (identityUser == null)
+                return BadRequest("Invalid External Authentication.");
+
+
+            User user = await _context.Users
+            .Where(s => s.UserName == identityUser.Email).FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                Console.WriteLine("something bad happpened");
+            }
+
+            var token = await _jwtHandler.GenerateToken(identityUser);
+            Response.Cookies.Append(_cookieName.GetSection("WebForumAPI").Value, token, new CookieOptions()
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.None,
+                Secure = true
+            });
+            return Ok(new AuthResponseDTO { Token = token, IsAuthSuccessful = true, Message = user.UserName });
         }
+        #endregion
     }
 }

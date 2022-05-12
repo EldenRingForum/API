@@ -37,6 +37,41 @@ namespace ForumAPI.Areas.WebForum.Controllers
         }
 
         // GET: api/Users/5
+        [HttpGet("GetPostWithComments/{id}")]
+        public async Task<ActionResult<List<User>>> GetEverything(int id)
+        {
+            
+            var user = await _context.Users
+                .Where(s => s.Id == id)
+                .Include(s => s.Posts)
+                .ThenInclude(s => s.Comments)
+                .ToListAsync();
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return user;
+        }
+
+        [HttpGet("GetComments/{id}")]
+        public async Task<ActionResult<List<User>>> GetComments(int id)
+        {
+            var user = await _context.Users
+                .Where(s => s.Id == id)
+                .Include(s => s.Comments)
+                .ToListAsync();
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return user;
+        }
+
+        // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {

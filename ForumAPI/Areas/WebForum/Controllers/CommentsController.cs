@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ForumAPI.Areas.WebForum.Data.Context;
 using ForumAPI.Areas.WebForum.Data.Models;
+using ForumAPI.Areas.WebForum.Data.Models.DTO;
 
 namespace ForumAPI.Areas.WebForum.Controllers
 {
@@ -30,16 +31,25 @@ namespace ForumAPI.Areas.WebForum.Controllers
 
         // GET: api/Comments/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Comment>> GetComment(int id)
+        public async Task<ActionResult<CommentsWithUserDTO>> GetComment(int id)
         {
-            var comment = await _context.Comments.FindAsync(id);
+            var dto = new CommentsWithUserDTO
+            {
+                Comment = await _context.Comments
+                .Where(s => s.UserId == id)
+                .ToListAsync(),
+                User = await _context.Users
+                .Where(s => s.Id == id)
+                .FirstOrDefaultAsync()
+            };
 
-            if (comment == null)
+
+            if (dto == null)
             {
                 return NotFound();
             }
 
-            return comment;
+            return dto;
         }
 
         // PUT: api/Comments/5

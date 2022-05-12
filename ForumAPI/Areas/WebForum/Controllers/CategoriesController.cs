@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ForumAPI.Areas.WebForum.Data.Context;
 using ForumAPI.Areas.WebForum.Data.Models;
+using ForumAPI.Areas.WebForum.Data.Models.DTO;
 
 namespace ForumAPI.Areas.WebForum.Controllers
 {
@@ -23,23 +24,52 @@ namespace ForumAPI.Areas.WebForum.Controllers
 
         // GET: api/Categories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+        public async Task<ActionResult<IEnumerable<Moderator>>> GetCategories()
         {
-            return await _context.Categories.ToListAsync();
+            var temp = await _context.Moderators
+                .ToListAsync();
+            return temp;
         }
 
         // GET: api/Categories/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(int id)
+        [HttpGet("GetCategoryWithPost/{id}")]
+        public async Task<ActionResult<Category>> GetCatWithPost(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var temp = await _context.Categories
+                .Include(s => s.Post)
+                .FirstOrDefaultAsync(s => s.Id == id);
 
-            if (category == null)
+            if (temp == null)
+            {
+                return NotFound();
+            }
+            return temp;
+        }
+
+        // GET: api/Categories/5
+        [HttpGet("GetCatWithMod/{id}")]
+        public async Task<ActionResult<CategoriesWithModeratorsDTO>> GetCatWithMod(int id)
+        {
+            var temp = new CategoriesWithModeratorsDTO();
+            
+            var moderator = await _context.Moderators
+                    .Where(s => s.CategoryId == id)
+                    .ToListAsync();
+            foreach (var User in moderator)
+            {
+                var user = _context.Users
+                    .FirstOrDefault(u => u.Id == User.Id);
+                temp.Users.Add(user);
+            }
+            temp.Category = _context.Categories
+                .FirstOrDefault(u => u.Id == id);
+
+            if (temp == null)
             {
                 return NotFound();
             }
 
-            return category;
+            return temp;
         }
 
         // PUT: api/Categories/5
