@@ -27,12 +27,15 @@ namespace ForumAPI.Areas.WebForum.Controllers
         }
 
         // GET: api/Users
-        //[Authorize(Policy = "ADMIN")]
+        [Authorize(Policy = "USER")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            var temp = this.User.Identity.Name;
-            Console.WriteLine(_userManager.GetUserAsync(this.User));
+            var email = _userManager.GetUserName(this.User);
+            //var user1 = await _userManager.FindByEmailAsync("jakobmetalv@gmail.com");
+            //await _userManager.DeleteAsync(user1);
+            var user = await _userManager.FindByEmailAsync(email);
+            Console.WriteLine(user.UserName);
             return await _context.Users.ToListAsync();
         }
 
@@ -40,9 +43,9 @@ namespace ForumAPI.Areas.WebForum.Controllers
         [HttpGet("GetPostWithComments/{id}")]
         public async Task<ActionResult<List<User>>> GetEverything(int id)
         {
-            
+            var temp = await _userManager.GetUserAsync(this.User);
             var user = await _context.Users
-                .Where(s => s.Id == id)
+                .Where(s => s.Email == temp.Email)
                 .Include(s => s.Posts)
                 .ThenInclude(s => s.Comments)
                 .ToListAsync();

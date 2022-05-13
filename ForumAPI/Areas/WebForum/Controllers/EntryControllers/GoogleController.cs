@@ -67,16 +67,17 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
                 if (identityUser == null)
                 {
 
-                    User profile = new User { UserName = payload.Email };
+                    User profile = new User { UserName = externalAuthDTO.UserName, Email = payload.Email };
                     Roles roles = new Roles();
 
-                    await _identityHandler.AddRoleToUser(payload.Email, roles.roles[0]);
+                   
                     _context.Users.Add(profile);
                     _context.SaveChanges();
 
-                    identityUser = new IdentityUser { Email = payload.Email, UserName = payload.Email };
+                    identityUser = new IdentityUser { Email = payload.Email, UserName = externalAuthDTO.UserName, EmailConfirmed = true };
 
                     await _userManager.CreateAsync(identityUser);
+                    await _identityHandler.AddRoleToUser(payload.Email, roles.roles[0]);
 
                     await _userManager.AddLoginAsync(identityUser, info);
 
@@ -92,7 +93,7 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
 
 
             User user = await _context.Users
-            .Where(s => s.UserName == identityUser.Email).FirstOrDefaultAsync();
+            .Where(s => s.Email == identityUser.Email).FirstOrDefaultAsync();
 
             if (user == null)
             {
@@ -100,7 +101,7 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
             }
 
             var token = await _jwtHandler.GenerateToken(identityUser);
-            Response.Cookies.Append(_cookieName.GetSection("WebForumAPI").Value, token, new CookieOptions()
+            Response.Cookies.Append(_cookieName.GetSection("ForumAPI").Value, token, new CookieOptions()
             {
                 HttpOnly = true,
                 SameSite = SameSiteMode.None,

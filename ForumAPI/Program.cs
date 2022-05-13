@@ -62,9 +62,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 // ADDING POLICIES FOR CLAIMS
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("ADMIN", policy =>
+    options.AddPolicy("MODERATOR", policy =>
     {
-        policy.RequireClaim(ClaimTypes.Role, "ADMIN");
+        policy.RequireClaim(ClaimTypes.Role, "MODERATOR");
         policy.RequireClaim(ClaimTypes.Role, "USER");
         policy.RequireAuthenticatedUser();
     });
