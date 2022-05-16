@@ -40,10 +40,11 @@ namespace ForumAPI.Areas.WebForum.Data.Context
                 new Category { Id = 1, CategoryName = "Elden Ring General Diskussion" },
                 new Category { Id = 2, CategoryName = "Elden Ring Builds"},
                 new Category { Id = 3, CategoryName = "Elden Ring Community"},
-                new Category { Id = 4, CategoryName = "Elden Ring Co-op and Help" },
-                new Category { Id = 5, CategoryName = "Elden Ring PvP"},
-                new Category { Id = 6, CategoryName = "Elden Ring Support"},
-                new Category { Id = 7, CategoryName = "Elden Ring Trade"}
+                new Category { Id = 4, CategoryName = "Elden Ring Lore" },
+                new Category { Id = 5, CategoryName = "Elden Ring Co-op and Help" },
+                new Category { Id = 6, CategoryName = "Elden Ring PvP"},
+                new Category { Id = 7, CategoryName = "Elden Ring Support"},
+                new Category { Id = 8, CategoryName = "Elden Ring Trade"}
                 );
             modelBuilder.Entity<Post>().HasData(
                 new Post { Id = 1, CategoryId = 1, UserId = 1, Title = "MIN TITEL ER DEN BEDSTE", Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris vel nunc ante. Fusce id nisl venenatis, mattis massa ut, laoreet velit. Vestibulum et est a diam rhoncus cursus non quis ipsum. Cras dignissim at massa ac finibus. Aenean non odio sed nisi ultrices ultrices vitae mollis risus. Quisque eleifend, leo quis consectetur placerat, mauris dolor congue quam, sit amet gravida augue quam quis augue. Maecenas et pulvinar ipsum. Sed lobortis vestibulum dolor vel rhoncus. Vestibulum non venenatis sapien, non blandit augue. Vivamus tortor libero, viverra ac vestibulum vel, c", DateOfCreation = DateTime.Now },

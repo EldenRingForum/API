@@ -32,11 +32,11 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
         [HttpGet("removetoken")]
         public bool RemoveToken()
         {
-            var token = Request.Cookies[_cookieName.GetSection("WebForumAPI").Value];
+            var token = Request.Cookies[_cookieName.GetSection("ForumAPI").Value];
             if (token == null) return false;
 
             token = "";
-            Response.Cookies.Append(_cookieName.GetSection("WebForumAPI").Value, token, new CookieOptions()
+            Response.Cookies.Append(_cookieName.GetSection("ForumAPI").Value, token, new CookieOptions()
             {
                 HttpOnly = true,
                 SameSite = SameSiteMode.None,
@@ -49,8 +49,10 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
         [HttpGet("checktoken")]
         public bool CheckToken()
         {
-            var token = Request.Cookies[_cookieName.GetSection("WebForumAPI").Value];
+            var token = Request.Cookies[_cookieName.GetSection("ForumAPI").Value];
             if (token == null) return false;
+
+            return _jwtHandler.ValidateToken(token);
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.GetSection("securityKey").Value);
