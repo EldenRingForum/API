@@ -62,7 +62,8 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
                 return StatusCode(406);
             }
             if (token == null) return StatusCode(404);
-
+            user = await _context.Users
+                .Where(s => s.UserName == register.UserName).FirstOrDefaultAsync();
             Console.WriteLine(token);
             Response.Cookies.Append(_cookieName.GetSection("ForumAPI").Value, token, new CookieOptions()
             {

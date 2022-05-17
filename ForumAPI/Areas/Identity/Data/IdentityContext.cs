@@ -16,6 +16,7 @@ public class IdentityContext : IdentityDbContext<IdentityUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.Entity<IdentityUser>().HasIndex(s => s.UserName).IsUnique();
+        builder.Entity<IdentityUser>().HasIndex(s => s.Email).IsUnique();
         Seed(builder);
         base.OnModelCreating(builder);
         // Customize the ASP.NET Identity model and override the defaults if needed.

@@ -66,7 +66,10 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
                 identityUser = await _userManager.FindByEmailAsync(payload.Email);
                 if (identityUser == null)
                 {
-
+                    if (externalAuthDTO.UserName == null)
+                    {
+                        return BadRequest("You tried to login instead of register.");
+                    }
                     User profile = new User { UserName = externalAuthDTO.UserName, Email = payload.Email };
                     Roles roles = new Roles();
 
