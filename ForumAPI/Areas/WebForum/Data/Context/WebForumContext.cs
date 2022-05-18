@@ -37,7 +37,7 @@ namespace ForumAPI.Areas.WebForum.Data.Context
                 new User { Id = 5, UserName = "Pigeon Boy", ProfilePicture = "PFPasString", Email = "jegeerenrigtigmail123@mail.com" }
                 );
             modelBuilder.Entity<Category>().HasData(
-                new Category { Id = 1, CategoryName = "Elden Ring General Diskussion" },
+                new Category { Id = 1, CategoryName = "Elden Ring General Discussion" },
                 new Category { Id = 2, CategoryName = "Elden Ring Builds"},
                 new Category { Id = 3, CategoryName = "Elden Ring Community"},
                 new Category { Id = 4, CategoryName = "Elden Ring Lore" },

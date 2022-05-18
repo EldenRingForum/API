@@ -9,6 +9,7 @@ using ForumAPI.Areas.WebForum.Data.Context;
 using ForumAPI.Areas.WebForum.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using ForumAPI.Areas.WebForum.Data.Models.DTO;
 
 namespace ForumAPI.Areas.WebForum.Controllers
 {
@@ -40,22 +41,27 @@ namespace ForumAPI.Areas.WebForum.Controllers
         }
 
         // GET: api/Users/5
-        [HttpGet("GetPostWithComments/{id}")]
-        public async Task<ActionResult<List<User>>> GetEverything(int id)
+        [HttpGet("GetPostWithComments")]
+        public async Task<ActionResult<UserWithPostsAndCommentsDTO>> GetEverything()
         {
-            var temp = await _userManager.GetUserAsync(this.User);
-            var user = await _context.Users
-                .Where(s => s.Email == temp.Email)
-                .Include(s => s.Posts)
-                .ThenInclude(s => s.Comments)
-                .ToListAsync();
+            var temp = _userManager.GetUserName(this.User);
+            var user = await _userManager.FindByEmailAsync(temp);
+            UserWithPostsAndCommentsDTO dto = new UserWithPostsAndCommentsDTO();
 
-            if (user == null)
+            var _User = await _context.Users.FirstOrDefaultAsync(s => s.Email == user.Email);
+            dto._Post = await _context.Posts
+                .Where(s => s.UserId == _User.Id)
+                .ToListAsync();
+            dto._Comments = await _context.Comments
+                .Where(s => s.UserId == _User.Id)
+                .ToListAsync();
+            
+            if (dto == null)
             {
                 return NotFound();
             }
 
-            return user;
+            return dto;
         }
 
         [HttpGet("GetComments/{id}")]
@@ -63,7 +69,7 @@ namespace ForumAPI.Areas.WebForum.Controllers
         {
             var user = await _context.Users
                 .Where(s => s.Id == id)
-                .Include(s => s.Comments)
+                //.Include(s => s.Comments)
                 .ToListAsync();
 
             if (user == null)

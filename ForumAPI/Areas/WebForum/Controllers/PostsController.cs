@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ForumAPI.Areas.WebForum.Data.Context;
 using ForumAPI.Areas.WebForum.Data.Models;
+using ForumAPI.Areas.WebForum.Data.Models.DTO;
 
 namespace ForumAPI.Areas.WebForum.Controllers
 {
@@ -32,14 +33,18 @@ namespace ForumAPI.Areas.WebForum.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Post>> GetPost(int id)
         {
-            var post = await _context.Posts.FindAsync(id);
+            var temp = await _context.Posts
+                .Include(s => s.User)
+                .Include(s => s.Comments)
+                .ThenInclude(s => s.User)
+                .FirstOrDefaultAsync();
 
-            if (post == null)
+            if (temp == null)
             {
                 return NotFound();
             }
 
-            return post;
+            return temp;
         }
 
         // PUT: api/Posts/5

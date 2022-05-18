@@ -10,5 +10,6 @@ namespace ForumAPI.Areas.WebForum.Data.Models
         public string Text { get; set; }
         public DateTime TimeOfCreation { get; set; }
         public bool FlaggedInapropriate { get; set; } = false;
+        public User User { get; set; }
     }
 }
