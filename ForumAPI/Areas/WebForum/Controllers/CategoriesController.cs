@@ -24,10 +24,10 @@ namespace ForumAPI.Areas.WebForum.Controllers
 
         // GET: api/Categories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Moderator>>> GetCategories()
+        public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
-            var temp = await _context.Moderators
-                .ToListAsync();
+            var temp = await _context.Categories
+                .ToListAsync(); 
             return temp;
         }
 

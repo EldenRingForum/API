@@ -17,6 +17,8 @@ namespace ForumAPI.Areas.WebForum.Controllers
     {
         private readonly WebForumContext _context;
 
+        private int PostsToInclude = 10;
+
         public PostsController(WebForumContext context)
         {
             _context = context;
@@ -29,6 +31,23 @@ namespace ForumAPI.Areas.WebForum.Controllers
             return await _context.Posts.ToListAsync();
         }
 
+        [HttpGet("GetCategoryPosts/{id}")]
+        public async Task<ActionResult<IEnumerable<Post>>> GetPostsInCategory(int id)
+        {
+            var temp = await _context.Posts
+                .Include(s => s.User)
+                .Include(s => s.Comments)
+                .Where(s => s.CategoryId == id)
+                .ToListAsync();
+
+            if (temp == null)
+            {
+                return NotFound();
+            }
+
+            return temp;
+        }
+
         // GET: api/Posts/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Post>> GetPost(int id)
@@ -37,7 +56,7 @@ namespace ForumAPI.Areas.WebForum.Controllers
                 .Include(s => s.User)
                 .Include(s => s.Comments)
                 .ThenInclude(s => s.User)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(s => s.Id == id);
 
             if (temp == null)
             {
@@ -45,6 +64,44 @@ namespace ForumAPI.Areas.WebForum.Controllers
             }
 
             return temp;
+        }
+        
+        // GET: api/Posts/5
+        [HttpGet("GetRecentPosts")]
+        public async Task<ActionResult<IEnumerable<PostWithCategoryDTO>>> GetPost()
+        {
+            //Skal bruge en DTO hvis jeg skal vise både post og catogorien posten ligger i
+            List<PostWithCategoryDTO> dtos = new List<PostWithCategoryDTO>();
+            var temp = await _context.Posts
+                .Include(s => s.Comments)
+                .OrderBy(s => s.DateOfCreation)
+                .ToListAsync();
+
+            //Der må kun være 10, for at fjerne de resterende
+            if (temp.Count > PostsToInclude)
+            {
+                temp.RemoveRange(PostsToInclude, temp.Count - PostsToInclude);
+            }
+
+
+            //for hver Post tilføjes en category til posten baseret på post.categoryid
+            foreach (var post in temp)
+            {
+                PostWithCategoryDTO dto = new PostWithCategoryDTO();
+                dto.CommentAmount = post.Comments.Count();
+                dto.Post = post;
+                dto.Category = await _context.Categories
+                    .FirstOrDefaultAsync(s => s.Id == post.CategoryId);
+                dtos.Add(dto);
+            }
+            
+
+            if (temp == null)
+            {
+                return NotFound();
+            }
+
+            return dtos;
         }
 
         // PUT: api/Posts/5

@@ -8,6 +8,7 @@ namespace ForumAPI.Areas.WebForum.Data.Models
         public int Id { get; set; }
         public string CategoryName { get; set; }
         public string IntroText { get; set; }
+        public string ImageLink { get; set; }
         public List<Post> Post { get; set; }
 
 

@@ -54,6 +54,7 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
 
             return _jwtHandler.ValidateToken(token);
 
+            /*
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.GetSection("securityKey").Value);
             try
@@ -75,7 +76,7 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
                 return false;
                 throw;
             }
-
+            */
 
         }
     }

@@ -4,6 +4,7 @@ using ForumAPI.Areas.WebForum.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ForumAPI.Areas.WebForum.Migrations
 {
     [DbContext(typeof(WebForumContext))]
-    partial class WebForumContextModelSnapshot : ModelSnapshot
+    [Migration("20220519110835_UserNameUnique_CategoryLink")]
+    partial class UserNameUnique_CategoryLink
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,57 +50,49 @@ namespace ForumAPI.Areas.WebForum.Migrations
                         {
                             Id = 1,
                             CategoryName = "Elden Ring General Discussion",
-                            ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/flask_of_crimson_tears_elden_ring_wiki_guide_200px.png",
-                            IntroText = "Hej dette er min intro text1"
+                            ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/flask_of_crimson_tears_elden_ring_wiki_guide_200px.png"
                         },
                         new
                         {
                             Id = 2,
                             CategoryName = "Elden Ring Builds",
-                            ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/crafting_kit_elden_ring_wiki_guide_200px.png",
-                            IntroText = "Hej dette er min intro text2"
+                            ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/crafting_kit_elden_ring_wiki_guide_200px.png"
                         },
                         new
                         {
                             Id = 3,
                             CategoryName = "Elden Ring Community",
-                            ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/golden_order_seal_sacred_seal_weapon_elden_ring_wiki_guide_200px.png",
-                            IntroText = "Hej dette er min intro text3"
+                            ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/golden_order_seal_sacred_seal_weapon_elden_ring_wiki_guide_200px.png"
                         },
                         new
                         {
                             Id = 4,
                             CategoryName = "Elden Ring Co-op and Help",
-                            ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/tarnisheds_furled_finger_elden_ring_wiki_guide_200px.png",
-                            IntroText = "Hej dette er min intro text4"
+                            ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/tarnisheds_furled_finger_elden_ring_wiki_guide_200px.png"
                         },
                         new
                         {
                             Id = 5,
                             CategoryName = "Elden Ring Lore",
-                            ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/conspectus_scroll_elden_ring_wiki_guide_200px.png",
-                            IntroText = "Hej dette er min intro text5"
+                            ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/conspectus_scroll_elden_ring_wiki_guide_200px.png"
                         },
                         new
                         {
                             Id = 6,
                             CategoryName = "Elden Ring PvP",
-                            ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/recusant_finger_elden_ring_wiki_guide_200px.png",
-                            IntroText = "Hej dette er min intro text6"
+                            ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/recusant_finger_elden_ring_wiki_guide_200px.png"
                         },
                         new
                         {
                             Id = 7,
                             CategoryName = "Elden Ring Support",
-                            ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/spirit_calling_bell_elden_ring_wiki_guide_200px.png",
-                            IntroText = "Hej dette er min intro text7"
+                            ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/spirit_calling_bell_elden_ring_wiki_guide_200px.png"
                         },
                         new
                         {
                             Id = 8,
                             CategoryName = "Elden Ring Trade",
-                            ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/lords-rune-tools-elden-ring-wiki-guide.png",
-                            IntroText = "Hej dette er min intro text8"
+                            ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/lords-rune-tools-elden-ring-wiki-guide.png"
                         });
                 });
 
@@ -140,7 +134,7 @@ namespace ForumAPI.Areas.WebForum.Migrations
                             FlaggedInapropriate = false,
                             PostId = 1,
                             Text = "Imagine using Lorum Ipsum :)",
-                            TimeOfCreation = new DateTime(2022, 5, 19, 14, 11, 12, 113, DateTimeKind.Local).AddTicks(3484),
+                            TimeOfCreation = new DateTime(2022, 5, 19, 13, 8, 34, 715, DateTimeKind.Local).AddTicks(9055),
                             UserId = 1
                         },
                         new
@@ -149,7 +143,7 @@ namespace ForumAPI.Areas.WebForum.Migrations
                             FlaggedInapropriate = false,
                             PostId = 1,
                             Text = "Imagine using Lorum Ipsum :)",
-                            TimeOfCreation = new DateTime(2022, 5, 19, 14, 11, 12, 113, DateTimeKind.Local).AddTicks(3487),
+                            TimeOfCreation = new DateTime(2022, 5, 19, 13, 8, 34, 715, DateTimeKind.Local).AddTicks(9058),
                             UserId = 1
                         },
                         new
@@ -158,7 +152,7 @@ namespace ForumAPI.Areas.WebForum.Migrations
                             FlaggedInapropriate = false,
                             PostId = 1,
                             Text = "Imagine using Lorum Ipsum :)",
-                            TimeOfCreation = new DateTime(2022, 5, 19, 14, 11, 12, 113, DateTimeKind.Local).AddTicks(3488),
+                            TimeOfCreation = new DateTime(2022, 5, 19, 13, 8, 34, 715, DateTimeKind.Local).AddTicks(9060),
                             UserId = 2
                         },
                         new
@@ -167,7 +161,7 @@ namespace ForumAPI.Areas.WebForum.Migrations
                             FlaggedInapropriate = false,
                             PostId = 2,
                             Text = "Imagine using Lorum Ipsum :)",
-                            TimeOfCreation = new DateTime(2022, 5, 19, 14, 11, 12, 113, DateTimeKind.Local).AddTicks(3490),
+                            TimeOfCreation = new DateTime(2022, 5, 19, 13, 8, 34, 715, DateTimeKind.Local).AddTicks(9062),
                             UserId = 2
                         },
                         new
@@ -176,7 +170,7 @@ namespace ForumAPI.Areas.WebForum.Migrations
                             FlaggedInapropriate = false,
                             PostId = 2,
                             Text = "Imagine using Lorum Ipsum :)",
-                            TimeOfCreation = new DateTime(2022, 5, 19, 14, 11, 12, 113, DateTimeKind.Local).AddTicks(3492),
+                            TimeOfCreation = new DateTime(2022, 5, 19, 13, 8, 34, 715, DateTimeKind.Local).AddTicks(9064),
                             UserId = 3
                         },
                         new
@@ -185,7 +179,7 @@ namespace ForumAPI.Areas.WebForum.Migrations
                             FlaggedInapropriate = false,
                             PostId = 1,
                             Text = "Imagine using Lorum Ipsum :)",
-                            TimeOfCreation = new DateTime(2022, 5, 19, 14, 11, 12, 113, DateTimeKind.Local).AddTicks(3494),
+                            TimeOfCreation = new DateTime(2022, 5, 19, 13, 8, 34, 715, DateTimeKind.Local).AddTicks(9065),
                             UserId = 1
                         },
                         new
@@ -194,7 +188,7 @@ namespace ForumAPI.Areas.WebForum.Migrations
                             FlaggedInapropriate = false,
                             PostId = 4,
                             Text = "Imagine using Lorum Ipsum :)",
-                            TimeOfCreation = new DateTime(2022, 5, 19, 14, 11, 12, 113, DateTimeKind.Local).AddTicks(3496),
+                            TimeOfCreation = new DateTime(2022, 5, 19, 13, 8, 34, 715, DateTimeKind.Local).AddTicks(9067),
                             UserId = 3
                         },
                         new
@@ -203,7 +197,7 @@ namespace ForumAPI.Areas.WebForum.Migrations
                             FlaggedInapropriate = false,
                             PostId = 4,
                             Text = "Imagine using Lorum Ipsum :)",
-                            TimeOfCreation = new DateTime(2022, 5, 19, 14, 11, 12, 113, DateTimeKind.Local).AddTicks(3498),
+                            TimeOfCreation = new DateTime(2022, 5, 19, 13, 8, 34, 715, DateTimeKind.Local).AddTicks(9069),
                             UserId = 3
                         },
                         new
@@ -212,7 +206,7 @@ namespace ForumAPI.Areas.WebForum.Migrations
                             FlaggedInapropriate = false,
                             PostId = 3,
                             Text = "Imagine using Lorum Ipsum :)",
-                            TimeOfCreation = new DateTime(2022, 5, 19, 14, 11, 12, 113, DateTimeKind.Local).AddTicks(3500),
+                            TimeOfCreation = new DateTime(2022, 5, 19, 13, 8, 34, 715, DateTimeKind.Local).AddTicks(9071),
                             UserId = 3
                         });
                 });
@@ -308,7 +302,7 @@ namespace ForumAPI.Areas.WebForum.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            DateOfCreation = new DateTime(2022, 5, 19, 14, 11, 12, 113, DateTimeKind.Local).AddTicks(3438),
+                            DateOfCreation = new DateTime(2022, 5, 19, 13, 8, 34, 715, DateTimeKind.Local).AddTicks(9003),
                             FlaggedInapropriate = false,
                             Stickied = false,
                             Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris vel nunc ante. Fusce id nisl venenatis, mattis massa ut, laoreet velit. Vestibulum et est a diam rhoncus cursus non quis ipsum. Cras dignissim at massa ac finibus. Aenean non odio sed nisi ultrices ultrices vitae mollis risus. Quisque eleifend, leo quis consectetur placerat, mauris dolor congue quam, sit amet gravida augue quam quis augue. Maecenas et pulvinar ipsum. Sed lobortis vestibulum dolor vel rhoncus. Vestibulum non venenatis sapien, non blandit augue. Vivamus tortor libero, viverra ac vestibulum vel, c",
@@ -319,7 +313,7 @@ namespace ForumAPI.Areas.WebForum.Migrations
                         {
                             Id = 2,
                             CategoryId = 1,
-                            DateOfCreation = new DateTime(2022, 5, 19, 14, 11, 12, 113, DateTimeKind.Local).AddTicks(3467),
+                            DateOfCreation = new DateTime(2022, 5, 19, 13, 8, 34, 715, DateTimeKind.Local).AddTicks(9038),
                             FlaggedInapropriate = false,
                             Stickied = false,
                             Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris vel nunc ante. Fusce id nisl venenatis, mattis massa ut, laoreet velit. Vestibulum et est a diam rhoncus cursus non quis ipsum. Cras dignissim at massa ac finibus. Aenean non odio sed nisi ultrices ultrices vitae mollis risus. Quisque eleifend, leo quis consectetur placerat, mauris dolor congue quam, sit amet gravida augue quam quis augue. Maecenas et pulvinar ipsum. Sed lobortis vestibulum dolor vel rhoncus. Vestibulum non venenatis sapien, non blandit augue. Vivamus tortor libero, viverra ac vestibulum vel, c",
@@ -330,7 +324,7 @@ namespace ForumAPI.Areas.WebForum.Migrations
                         {
                             Id = 3,
                             CategoryId = 2,
-                            DateOfCreation = new DateTime(2022, 5, 19, 14, 11, 12, 113, DateTimeKind.Local).AddTicks(3469),
+                            DateOfCreation = new DateTime(2022, 5, 19, 13, 8, 34, 715, DateTimeKind.Local).AddTicks(9040),
                             FlaggedInapropriate = false,
                             Stickied = false,
                             Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris vel nunc ante. Fusce id nisl venenatis, mattis massa ut, laoreet velit. Vestibulum et est a diam rhoncus cursus non quis ipsum. Cras dignissim at massa ac finibus. Aenean non odio sed nisi ultrices ultrices vitae mollis risus. Quisque eleifend, leo quis consectetur placerat, mauris dolor congue quam, sit amet gravida augue quam quis augue. Maecenas et pulvinar ipsum. Sed lobortis vestibulum dolor vel rhoncus. Vestibulum non venenatis sapien, non blandit augue. Vivamus tortor libero, viverra ac vestibulum vel, c",
@@ -341,7 +335,7 @@ namespace ForumAPI.Areas.WebForum.Migrations
                         {
                             Id = 4,
                             CategoryId = 4,
-                            DateOfCreation = new DateTime(2022, 5, 19, 14, 11, 12, 113, DateTimeKind.Local).AddTicks(3471),
+                            DateOfCreation = new DateTime(2022, 5, 19, 13, 8, 34, 715, DateTimeKind.Local).AddTicks(9042),
                             FlaggedInapropriate = false,
                             Stickied = false,
                             Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris vel nunc ante. Fusce id nisl venenatis, mattis massa ut, laoreet velit. Vestibulum et est a diam rhoncus cursus non quis ipsum. Cras dignissim at massa ac finibus. Aenean non odio sed nisi ultrices ultrices vitae mollis risus. Quisque eleifend, leo quis consectetur placerat, mauris dolor congue quam, sit amet gravida augue quam quis augue. Maecenas et pulvinar ipsum. Sed lobortis vestibulum dolor vel rhoncus. Vestibulum non venenatis sapien, non blandit augue. Vivamus tortor libero, viverra ac vestibulum vel, c",
