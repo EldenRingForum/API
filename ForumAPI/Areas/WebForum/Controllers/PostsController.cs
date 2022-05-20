@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using ForumAPI.Areas.WebForum.Data.Context;
 using ForumAPI.Areas.WebForum.Data.Models;
 using ForumAPI.Areas.WebForum.Data.Models.DTO;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ForumAPI.Areas.WebForum.Controllers
 {
@@ -16,11 +18,13 @@ namespace ForumAPI.Areas.WebForum.Controllers
     public class PostsController : ControllerBase
     {
         private readonly WebForumContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
         private int PostsToInclude = 10;
 
-        public PostsController(WebForumContext context)
+        public PostsController(WebForumContext context, UserManager<IdentityUser> userManager)
         {
+            _userManager = userManager;
             _context = context;
         }
 
@@ -32,25 +36,50 @@ namespace ForumAPI.Areas.WebForum.Controllers
         }
 
         [HttpGet("GetCategoryPosts/{id}")]
-        public async Task<ActionResult<IEnumerable<Post>>> GetPostsInCategory(int id)
+        public async Task<ActionResult<UnpinnedAndPinnedPostsDTO>> GetPostsInCategory(int id)
         {
-            var temp = await _context.Posts
+            UnpinnedAndPinnedPostsDTO dto = new UnpinnedAndPinnedPostsDTO()
+            {
+                UnpinnedPosts = await _context.Posts
                 .Include(s => s.User)
                 .Include(s => s.Comments)
-                .Where(s => s.CategoryId == id)
-                .ToListAsync();
+                .Where(s => s.CategoryId == id && s.Stickied == false)
+                .ToListAsync(),
 
-            if (temp == null)
+                PinnedPosts = await _context.Posts
+                .Include(s => s.User)
+                .Include(s => s.Comments)
+                .Where(s => s.CategoryId == id && s.Stickied == true)
+                .ToListAsync(),
+
+            };
+
+            foreach (var post in dto.UnpinnedPosts)
+            {
+                post.CommentAmount = post.Comments.Count;
+                post.Comments = null;
+
+            }
+            foreach (var post in dto.PinnedPosts)
+            {
+                post.CommentAmount = post.Comments.Count;
+                post.Comments = null;
+            }
+
+
+            if (dto == null)
             {
                 return NotFound();
             }
 
-            return temp;
+            return dto;
         }
+
+
 
         // GET: api/Posts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Post>> GetPost(int id)
+        public async Task<ActionResult<Post>> GetPostFromCat(int id)
         {
             var temp = await _context.Posts
                 .Include(s => s.User)
@@ -65,7 +94,7 @@ namespace ForumAPI.Areas.WebForum.Controllers
 
             return temp;
         }
-        
+
         // GET: api/Posts/5
         [HttpGet("GetRecentPosts")]
         public async Task<ActionResult<IEnumerable<PostWithCategoryDTO>>> GetPost()
@@ -90,11 +119,12 @@ namespace ForumAPI.Areas.WebForum.Controllers
                 PostWithCategoryDTO dto = new PostWithCategoryDTO();
                 dto.CommentAmount = post.Comments.Count();
                 dto.Post = post;
+                dto.TimeOfCreation = dto.Post.DateOfCreation.ToString("g");                
                 dto.Category = await _context.Categories
                     .FirstOrDefaultAsync(s => s.Id == post.CategoryId);
                 dtos.Add(dto);
             }
-            
+
 
             if (temp == null)
             {
@@ -137,13 +167,19 @@ namespace ForumAPI.Areas.WebForum.Controllers
 
         // POST: api/Posts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Policy = "USER")]
         [HttpPost]
         public async Task<ActionResult<Post>> PostPost(Post post)
         {
+            var temp = _userManager.GetUserName(this.User);
+            var user = await _userManager.FindByEmailAsync(temp);
+            var _User = await _context.Users.FirstOrDefaultAsync(s => s.Email == user.Email);
+            post.UserId = _User.Id;
+            post.DateOfCreation = DateTime.Now;
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetPost", new { id = post.Id }, post);
+            post.User = _User;
+            return CreatedAtAction("GetPost", new { id = post.Id, }, post);
         }
 
         // DELETE: api/Posts/5

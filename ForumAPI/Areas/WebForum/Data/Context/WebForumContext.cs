@@ -21,6 +21,7 @@ namespace ForumAPI.Areas.WebForum.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Post>().Ignore(s => s.CommentAmount);
             modelBuilder.Entity<User>().HasIndex(s => s.UserName).IsUnique();
             SeedDatabase(modelBuilder);
 
@@ -29,7 +30,7 @@ namespace ForumAPI.Areas.WebForum.Data.Context
 
         private void SeedDatabase(ModelBuilder modelBuilder)
         {
-
+            
             modelBuilder.Entity<User>().HasData(
                 new User { Id = 1, UserName = "TopDude", ProfilePicture = "PFPasString", Email = "jegeerenrigtigmail3@mail.com" },
                 new User { Id = 2, UserName = "Benitarex", ProfilePicture = "PFPasString", Email = "eerenrigtigmail3@mail.com" },

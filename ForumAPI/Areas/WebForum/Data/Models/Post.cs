@@ -13,6 +13,7 @@ namespace ForumAPI.Areas.WebForum.Data.Models
         public bool Stickied { get; set; } = false;
         public bool FlaggedInapropriate { get; set; } = false;
         public List<Comment> Comments { get; set; }
+        public int CommentAmount { get; set; }
         public User User { get; set; }
     }
 }
