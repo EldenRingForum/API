@@ -3,6 +3,7 @@ using ForumAPI.Areas.WebForum.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using ForumAPI.Areas.WebForum.Data.Context;
 using ForumAPI.Areas.WebForum.Services;
+using System.Security.Claims;
 
 namespace ForumAPI.Areas.Identity.Services
 {
@@ -141,6 +142,21 @@ namespace ForumAPI.Areas.Identity.Services
                 await _userManager.DeleteAsync(user);
             }
             return null;
+        }
+
+        public async Task<bool> ChangePassword(ClaimsPrincipal userClaims, string oldPassword, string newPassword)
+        {
+            var user = _userManager.GetUserName(userClaims);
+            var identityuser = await _userManager.FindByEmailAsync(user);
+            var result = await _userManager.ChangePasswordAsync(identityuser, oldPassword, newPassword);
+            if (result.Succeeded)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         #endregion
     }

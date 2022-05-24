@@ -55,7 +55,7 @@ namespace ForumAPI.Areas.WebForum.Controllers
             dto._Comments = await _context.Comments
                 .Where(s => s.UserId == _User.Id)
                 .ToListAsync();
-            
+
             if (dto == null)
             {
                 return NotFound();
@@ -75,6 +75,35 @@ namespace ForumAPI.Areas.WebForum.Controllers
             if (user == null)
             {
                 return NotFound();
+            }
+
+            return user;
+        }
+
+        [HttpPut("UpdateImage")]
+        public async Task<ActionResult<User>> UpdateImage(User userPfp)
+        {
+            var temp = _userManager.GetUserName(this.User);
+            var identityuser = await _userManager.FindByEmailAsync(temp);
+            var user = await _context.Users.FirstOrDefaultAsync(s => s.Email == identityuser.Email);
+            user.ProfilePicture = userPfp.ProfilePicture;
+
+            _context.Entry(user).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(user.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
             }
 
             return user;

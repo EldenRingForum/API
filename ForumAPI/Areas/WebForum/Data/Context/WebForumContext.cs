@@ -23,6 +23,7 @@ namespace ForumAPI.Areas.WebForum.Data.Context
         {
             modelBuilder.Entity<Post>().Ignore(s => s.CommentAmount);
             modelBuilder.Entity<User>().HasIndex(s => s.UserName).IsUnique();
+            modelBuilder.Entity<User>().Property(s => s.ProfilePicture).HasDefaultValue("https://i.pinimg.com/736x/74/b3/54/74b35486d3a1f639519ba0cf12821016.jpg");
             SeedDatabase(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
@@ -30,13 +31,13 @@ namespace ForumAPI.Areas.WebForum.Data.Context
 
         private void SeedDatabase(ModelBuilder modelBuilder)
         {
-            
+
             modelBuilder.Entity<User>().HasData(
-                new User { Id = 1, UserName = "TopDude", ProfilePicture = "PFPasString", Email = "jegeerenrigtigmail3@mail.com" },
-                new User { Id = 2, UserName = "Benitarex", ProfilePicture = "PFPasString", Email = "eerenrigtigmail3@mail.com" },
-                new User { Id = 3, UserName = "MindOfBenita", ProfilePicture = "PFPasString", Email = "enrigtigmail3@mail.com" },
-                new User { Id = 4, UserName = "Gamerpigeon", ProfilePicture = "PFPasString", Email = "jegeerenmail3@mail.com" },
-                new User { Id = 5, UserName = "Pigeon Boy", ProfilePicture = "PFPasString", Email = "jegeerenrigtigmail123@mail.com" }
+                new User { Id = 1, UserName = "TopDude", Email = "jegeerenrigtigmail3@mail.com" },
+                new User { Id = 2, UserName = "Benitarex", Email = "eerenrigtigmail3@mail.com" },
+                new User { Id = 3, UserName = "MindOfBenita", Email = "enrigtigmail3@mail.com" },
+                new User { Id = 4, UserName = "Gamerpigeon", Email = "jegeerenmail3@mail.com" },
+                new User { Id = 5, UserName = "Pigeon Boy", Email = "jegeerenrigtigmail123@mail.com" }
                 );
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, IntroText = "Hej dette er min intro text1", CategoryName = "General Discussion", ImageLink = "https://eldenring.wiki.fextralife.com/file/Elden-Ring/flask_of_crimson_tears_elden_ring_wiki_guide_200px.png" },

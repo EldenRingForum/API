@@ -4,6 +4,7 @@ using ForumAPI.Areas.WebForum.Data.Models.DTO;
 using ForumAPI.Areas.WebForum.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ForumAPI.Areas.WebForum.Data.Models.DTO.AuthDTO;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -74,36 +75,10 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
             return Ok(user);
         }
 
-        // GET: api/<IdentityController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        [HttpPut("UpdatePassword")]
+        public async Task<bool> UpdatePassword(UpdatePasswordDTO passwords)
         {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<IdentityController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<IdentityController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<IdentityController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<IdentityController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return await _identityHandler.ChangePassword(this.User, passwords.OldPassword, passwords.NewPassword);
         }
     }
 }
