@@ -1,4 +1,5 @@
-﻿using ForumAPI.Areas.WebForum.Services;
+﻿using ForumAPI.Areas.WebForum.Data.Models.DTO.AuthDTO;
+using ForumAPI.Areas.WebForum.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,7 +23,6 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
             JWTHandler JWTHandler
             )
         {
-
             _jwtHandler = JWTHandler;
             _configuration = configuration;
             _cookieName = _configuration.GetSection("CookieNames");
@@ -47,37 +47,22 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
 
         // POST api/<GenericActionsController>
         [HttpGet("checktoken")]
-        public bool CheckToken()
+        public async Task<RoleCheckDTO> CheckToken()
         {
+            RoleCheckDTO RoleCheck = new RoleCheckDTO();
             var token = Request.Cookies[_cookieName.GetSection("ForumAPI").Value];
-            if (token == null) return false;
-
-            return _jwtHandler.ValidateToken(token);
-
-            /*
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtSettings.GetSection("securityKey").Value);
-            try
+            if (token == null)
             {
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
-                }, out SecurityToken validatedToken);
-
-                var jwtToken = (JwtSecurityToken)validatedToken;
-                return true;
+                RoleCheck.LoggedIn = false;
+                RoleCheck.IsAdmin = false;
+                return RoleCheck;
             }
-            catch (Exception)
-            {
-                return false;
-                throw;
-            }
-            */
+            RoleCheck.IsAdmin = this.User.IsInRole("ADMIN");
+            RoleCheck.LoggedIn = _jwtHandler.ValidateToken(token);
 
+            return RoleCheck;
         }
+
+
     }
 }

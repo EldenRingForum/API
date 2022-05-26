@@ -5,6 +5,8 @@ using ForumAPI.Areas.WebForum.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ForumAPI.Areas.WebForum.Data.Models.DTO.AuthDTO;
+using ForumAPI.Areas.Identity.Data;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -75,10 +77,23 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
             return Ok(user);
         }
 
+        [HttpGet("AddAdminRole")]
+        public async Task<ActionResult> AddModeratorRoleToUser(IdentityDTO register)
+        {
+            Roles role = new Roles();
+
+            await _identityHandler.AddRoleToUser(register.Email, role.roles[1]);
+
+            return Ok();
+        }
+
+        [Authorize(Policy = "USER")]
         [HttpPut("UpdatePassword")]
         public async Task<bool> UpdatePassword(UpdatePasswordDTO passwords)
         {
             return await _identityHandler.ChangePassword(this.User, passwords.OldPassword, passwords.NewPassword);
         }
+
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ForumAPI.Areas.WebForum.Data.Context;
 using ForumAPI.Areas.WebForum.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace ForumAPI.Areas.WebForum.Controllers
 {
+    [Authorize(Policy = "MODERATOR")]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -24,6 +26,7 @@ namespace ForumAPI.Areas.WebForum.Controllers
 
         //Warn User
         //at the moment this does nothing because there isnt an email system yet, but its supposed to send email to the user and inform them
+        [Authorize(Policy = "MODERATOR")]
         [HttpGet("WarnUser")]
         public async Task<IActionResult> WarnUser()
         {
@@ -33,6 +36,7 @@ namespace ForumAPI.Areas.WebForum.Controllers
 
         //Ban User
         //This just deletes the user but it should maybe just restric
+        [Authorize(Policy = "MODERATOR")]
         [HttpGet("BanUser/{id}")]
         public async Task<IActionResult> BanUser(int id)
         {
@@ -51,7 +55,7 @@ namespace ForumAPI.Areas.WebForum.Controllers
                 throw;
             }
 
-            return NoContent();
+            return Ok("User banned");
         }
 
         #region Post Admin Tools
@@ -125,6 +129,7 @@ namespace ForumAPI.Areas.WebForum.Controllers
 
         #region Comment Admin Tools
         //Delete Comment
+        [Authorize(Policy = "MODERATOR")]
         [HttpPut("DeleteComment")]
         public async Task<IActionResult> DeleteComment(Comment comment)
         {
