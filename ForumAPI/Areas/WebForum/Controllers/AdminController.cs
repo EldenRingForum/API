@@ -59,7 +59,9 @@ namespace ForumAPI.Areas.WebForum.Controllers
         }
 
         #region Post Admin Tools
+
         //Delete Post
+        [Authorize(Policy = "MODERATOR")]
         [HttpPut("DeletePost")]
         public async Task<IActionResult> DeletePost(Post post)
         {
@@ -88,6 +90,7 @@ namespace ForumAPI.Areas.WebForum.Controllers
         }
 
         //Pin/Unpin Thread
+        [Authorize(Policy = "MODERATOR")]
         [HttpPut("PinUnpin")]
         public async Task<IActionResult> PinUnpinThread(Post post)
         {
