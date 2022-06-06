@@ -45,6 +45,7 @@ namespace ForumAPI.Areas.WebForum.Controllers
             }
             var email = _userManager.GetUserName(this.User);
             var user = await _userManager.FindByEmailAsync(email);
+            
             return await _context.Users.FirstOrDefaultAsync(s => s.Email == user.Email);
         }
 
@@ -86,6 +87,7 @@ namespace ForumAPI.Areas.WebForum.Controllers
 
             return user;
         }
+
 
         [HttpPut("UpdateImage")]
         public async Task<ActionResult<User>> UpdateImage(User userPfp)

@@ -46,7 +46,9 @@ namespace ForumAPI.Areas.WebForum.Controllers
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            comment.User = _User;
+
+            return Ok(comment);
         }
 
         

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using ForumAPI.Areas.WebForum.Data.Context;
 using ForumAPI.Areas.WebForum.Services;
 using System.Security.Claims;
+using ForumAPI.Areas.Identity.Data;
 
 namespace ForumAPI.Areas.Identity.Services
 {
@@ -113,6 +114,7 @@ namespace ForumAPI.Areas.Identity.Services
             return null;
         }
 
+        //Skal måske være dynamisk til at kunne tilføje flere roller på en gang
         public async Task<string> Register(IdentityDTO login)
         {
             if (await _userManager.FindByEmailAsync(login.Email) is not null) return "bad";
@@ -125,7 +127,8 @@ namespace ForumAPI.Areas.Identity.Services
             {
                 User profile = new User { UserName = login.UserName, Email = login.Email };
 
-                await AddMultipleRolesToUser(profile.UserName, login.roles);
+                Roles roles = new Roles();
+                await AddRoleToUser(user.Email, roles.roles[0]);
                 _context.Users.Add(profile);
                 _context.SaveChanges();
                 login.Password = "";

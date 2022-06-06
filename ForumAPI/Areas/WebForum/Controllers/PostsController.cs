@@ -148,7 +148,7 @@ namespace ForumAPI.Areas.WebForum.Controllers
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
             post.User = _User;
-            return Ok("Thread has been posted");
+            return Ok(post);
         }
 
         private bool PostExists(int id)

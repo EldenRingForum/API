@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using ForumAPI.Areas.WebForum.Data.Models.DTO.AuthDTO;
 using ForumAPI.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -67,6 +68,7 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
             if (token == null) return StatusCode(404);
             user = await _context.Users
                 .Where(s => s.UserName == register.UserName).FirstOrDefaultAsync();
+            
             Console.WriteLine(token);
             Response.Cookies.Append(_cookieName.GetSection("ForumAPI").Value, token, new CookieOptions()
             {
