@@ -36,9 +36,20 @@ namespace ForumAPI.Areas.WebForum.Controllers
             return await _context.Users.ToListAsync();
         }
 
-        // GET: api/Users/5
+        [HttpGet("GetUser")]
+        public async Task<ActionResult<User>> GetUser()
+        {
+            if (this.User.Identity.Name is null)
+            {
+                return NoContent();
+            }
+            var email = _userManager.GetUserName(this.User);
+            var user = await _userManager.FindByEmailAsync(email);
+            return await _context.Users.FirstOrDefaultAsync(s => s.Email == user.Email);
+        }
+
         [HttpGet("GetPostWithComments")]
-        public async Task<ActionResult<UserWithPostsAndCommentsDTO>> GetEverything()
+        public async Task<ActionResult<UserWithPostsAndCommentsDTO>> GetUserHistory()
         {
             var temp = _userManager.GetUserName(this.User);
             var user = await _userManager.FindByEmailAsync(temp);
@@ -61,10 +72,10 @@ namespace ForumAPI.Areas.WebForum.Controllers
         }
 
         [HttpGet("GetComments/{id}")]
-        public async Task<ActionResult<List<User>>> GetComments(int id)
+        public async Task<ActionResult<List<Comment>>> GetMyComments(int id)
         {
-            var user = await _context.Users
-                .Where(s => s.Id == id)
+            var user = await _context.Comments
+                .Where(s => s.UserId == id)
                 //.Include(s => s.Comments)
                 .ToListAsync();
 
@@ -76,10 +87,13 @@ namespace ForumAPI.Areas.WebForum.Controllers
             return user;
         }
 
-        [Authorize(Policy = "USER")]
         [HttpPut("UpdateImage")]
         public async Task<ActionResult<User>> UpdateImage(User userPfp)
         {
+            if (this.User.Identity.Name is null)
+            {
+                return NoContent();
+            }
             var temp = _userManager.GetUserName(this.User);
             var identityuser = await _userManager.FindByEmailAsync(temp);
             var user = await _context.Users.FirstOrDefaultAsync(s => s.Email == identityuser.Email);

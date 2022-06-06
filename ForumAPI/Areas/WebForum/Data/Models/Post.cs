@@ -15,5 +15,7 @@ namespace ForumAPI.Areas.WebForum.Data.Models
         public List<Comment> Comments { get; set; }
         public int CommentAmount { get; set; }
         public User User { get; set; }
+        
+        
     }
 }

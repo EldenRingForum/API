@@ -28,6 +28,12 @@ namespace ForumAPI.Areas.WebForum.Controllers
             return await _context.Categories.ToListAsync();
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Category>> GetCategoryName(int id)
+        {
+            return await _context.Categories.Where(s => s.Id == id).FirstOrDefaultAsync();
+        }
+
         // GET: api/Categories/5
         [HttpGet("GetCategoryWithPost/{id}")]
         public async Task<ActionResult<Category>> GetCatWithPost(int id)
@@ -67,35 +73,6 @@ namespace ForumAPI.Areas.WebForum.Controllers
             }
 
             return temp;
-        }
-
-        // POST: api/Categories
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize(Policy = "MODERATOR")]
-        [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
-        {
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCategory", new { id = category.Id }, category);
-        }
-
-        // DELETE: api/Categories/5
-        [Authorize(Policy = "MODERATOR")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
-        {
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
 
         private bool CategoryExists(int id)

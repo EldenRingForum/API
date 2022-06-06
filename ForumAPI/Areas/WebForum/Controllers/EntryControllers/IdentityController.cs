@@ -77,7 +77,8 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
             return Ok(user);
         }
 
-        [HttpGet("AddAdminRole")]
+        [Authorize(Policy = "MODERATOR")]
+        [HttpGet("AddModeratorRole")]
         public async Task<ActionResult> AddModeratorRoleToUser(IdentityDTO register)
         {
             Roles role = new Roles();
@@ -91,6 +92,10 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
         [HttpPut("UpdatePassword")]
         public async Task<bool> UpdatePassword(UpdatePasswordDTO passwords)
         {
+            if (passwords.NewPassword != passwords.ConfirmNewPassword)
+            {
+                return false;
+            }
             return await _identityHandler.ChangePassword(this.User, passwords.OldPassword, passwords.NewPassword);
         }
 

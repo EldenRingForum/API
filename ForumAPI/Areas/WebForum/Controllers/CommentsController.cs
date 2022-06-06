@@ -49,22 +49,7 @@ namespace ForumAPI.Areas.WebForum.Controllers
             return Ok();
         }
 
-        // DELETE: api/Comments/5
-        [Authorize(Policy = "MODERATOR")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteComment(int id)
-        {
-            var comment = await _context.Comments.FindAsync(id);
-            if (comment == null)
-            {
-                return NotFound();
-            }
-
-            _context.Comments.Remove(comment);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
+        
 
         private bool CommentExists(int id)
         {

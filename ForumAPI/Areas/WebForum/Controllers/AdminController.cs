@@ -85,7 +85,7 @@ namespace ForumAPI.Areas.WebForum.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok("Post text has been deleted");
             // Skal erstatte tekst og til at den er (Thread Has been Deleted)
         }
 
@@ -156,8 +156,7 @@ namespace ForumAPI.Areas.WebForum.Controllers
                 }
             }
 
-            return Ok(comment);
-            // Skal erstatte tekst og til at den er (Thread Has been Deleted)
+            return Ok("Comment text has been deleted");
         }
 
         private bool CommentExists(int id)
