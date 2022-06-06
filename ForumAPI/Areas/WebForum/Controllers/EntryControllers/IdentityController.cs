@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using ForumAPI.Areas.WebForum.Data.Models.DTO.AuthDTO;
 using ForumAPI.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
-using System.Data;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
