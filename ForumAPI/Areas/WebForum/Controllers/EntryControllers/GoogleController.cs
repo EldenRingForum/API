@@ -46,42 +46,54 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
             _cookieName = _configuration.GetSection("CookieNames");
         }
 
-        //TODO: skal lige laves sådan at usernames kommer med ind over
-        //this function logs the user in on our server end with google login and returns a cookie in httponly format for CRSF security
+        /// <summary>
+        /// Registrer og logger brugeren ind med googles SSO,
+        /// </summary>
+        /// <param name="externalAuthDTO"></param>
+        /// <returns>
+        /// samt om den funktionen fuldførte sit job med IsAuthSuccesful = true
+        /// Den returnere en token som HttpOnly, secure og samesite.none
+        /// </returns>
+        //this function logs the user in on our server with a google account and returns a cookie in httponly format for CRSF security
         #region Google login
         [HttpPost("login")]
         public async Task<IActionResult> GoogleLogin([FromBody] ExternalAuthDTO externalAuthDTO)
         {
+            //checker om det er den korrekte information vi har fået fra brugeren.
             var payload = await _jwtHandler.VerifyGoogleToken(externalAuthDTO);
             if (payload == null)
                 return BadRequest("invalid External Auth");
 
+            //sætter variabler vi kan bruge det som et objekt
             var info = new UserLoginInfo(externalAuthDTO.Provider, payload.Subject, externalAuthDTO.Provider);
 
-            //logs the user to the identity
+            //Checker har oprettet sig selv via google login
             var identityUser = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
             if (identityUser == null)
             {
-
+                // checker om kontoen allerede findes i databasen
                 identityUser = await _userManager.FindByEmailAsync(payload.Email);
                 if (identityUser == null)
                 {
-                    if (externalAuthDTO.UserName == null)
+                    // Frontend burde tage sig af det her check men er her for en sikkerheds skyld
+                    if (externalAuthDTO.UserName is null)
                     {
-                        return BadRequest("You tried to login instead of register.");
+                        return BadRequest("Your username is null");
                     }
+                    // laver ny bruger
                     User profile = new User { UserName = externalAuthDTO.UserName, Email = payload.Email };
                     Roles roles = new Roles();
 
-                   
+                    //gemmer information i databasen
                     _context.Users.Add(profile);
                     _context.SaveChanges();
 
+                    //ny identity bruger
                     identityUser = new IdentityUser { Email = payload.Email, UserName = externalAuthDTO.UserName, EmailConfirmed = true };
 
                     await _userManager.CreateAsync(identityUser);
                     await _identityHandler.AddRoleToUser(payload.Email, roles.roles[0]);
-
+                    //tilføjer rolle til bruger
                     await _userManager.AddLoginAsync(identityUser, info);
 
                 }
@@ -98,11 +110,13 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
             User user = await _context.Users
             .Where(s => s.Email == identityUser.Email).FirstOrDefaultAsync();
 
+            //Burde ikke kunne logge ind hvis den ikke kan finde i databasen, så er der gået noget galt.
             if (user == null)
             {
                 Console.WriteLine("something bad happpened");
             }
 
+            // generere en token til systemet.
             var token = await _jwtHandler.GenerateToken(identityUser);
             Response.Cookies.Append(_cookieName.GetSection("ForumAPI").Value, token, new CookieOptions()
             {
