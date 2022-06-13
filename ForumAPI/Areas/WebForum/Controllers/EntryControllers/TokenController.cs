@@ -57,7 +57,7 @@ namespace ForumAPI.Areas.WebForum.Controllers.EntryControllers
                 RoleCheck.IsAdmin = false;
                 return RoleCheck;
             }
-            RoleCheck.IsAdmin = this.User.IsInRole("ADMIN");
+            RoleCheck.IsAdmin = this.User.IsInRole("MODERATOR");
             RoleCheck.LoggedIn = _jwtHandler.ValidateToken(token);
 
             return RoleCheck;
